@@ -1,18 +1,26 @@
-﻿# Simple Dockerfile for local development
+﻿FROM node:20 AS build
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+ARG API_HOST
+ARG API_PORT
+ARG API_BASE
+
+ENV VITE_API_HOST=$API_HOST
+ENV VITE_API_PORT=$API_PORT
+ENV VITE_API_BASE=$API_BASE
+
+RUN npm run build
+
 FROM nginx:alpine
 
-# Copy pre-built application
-COPY dist/ /usr/share/nginx/html/
-
-# Create nginx configuration for SPA
-RUN echo 'server { \
-    listen 80; \
-    root /usr/share/nginx/html; \
-    index index.html; \
-    location / { \
-        try_files $uri $uri/ /index.html; \
-    } \
-}' > /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 80
 

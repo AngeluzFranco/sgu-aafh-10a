@@ -2,8 +2,7 @@
 
 WORKDIR /app
 
-COPY pom.xml ./
-COPY src/ ./src/
+COPY . .
 
 RUN mvn clean package -DskipTests && cp target/*.jar app.jar
 
