@@ -6,7 +6,7 @@ pipeline {
         stage('Parando los servicios...') {
             steps {
                 bat '''
-                    docker compose -p sgu-aafh-10a down || exit /b 0
+                    docker compose -f docker-compose.ci.yml -p sgu-aafh-10a down || exit /b 0
                 '''
             }
         }
@@ -38,7 +38,7 @@ pipeline {
         stage('Construyendo y desplegando servicios...') {
             steps {
                 bat '''
-                    docker compose up --build -d
+                    docker compose -f docker-compose.ci.yml up --build -d
                 '''
             }
         }
