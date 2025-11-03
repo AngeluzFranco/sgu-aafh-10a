@@ -6,10 +6,15 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>SGU - Sistema de Gestión de Usuarios</h1>
+        <div className="container">
+          <h1>SGU - Sistema de Gestión de Usuarios</h1>
+          <p className="subtitle">Administra usuarios de forma moderna y eficiente</p>
+        </div>
       </header>
       <main>
-        <Users />
+        <div className="container">
+          <Users />
+        </div>
       </main>
     </div>
   )

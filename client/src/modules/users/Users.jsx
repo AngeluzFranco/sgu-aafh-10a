@@ -92,20 +92,22 @@ const Users = () => {
     return (
         <div className="users-container">
             <div className="users-header">
-                <h1>Gestión de Usuarios</h1>
+                <h1>👥 Gestión de Usuarios</h1>
                 <button 
                     className="btn btn-primary" 
                     onClick={openCreateModal}
                     disabled={loading}
                 >
-                    Nuevo Usuario
+                    ➕ Nuevo Usuario
                 </button>
             </div>
 
             {message && (
-                <div className="alert">
-                    {message}
-                    <button onClick={() => setMessage('')}>×</button>
+                <div className="alert fade-in">
+                    <span>{message}</span>
+                    <button className="alert-close" onClick={() => setMessage('')}>
+                        ✕
+                    </button>
                 </div>
             )}
 
@@ -113,44 +115,53 @@ const Users = () => {
                 <table className="users-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Nombre Completo</th>
-                            <th>Correo Electrónico</th>
-                            <th>Teléfono</th>
-                            <th>Acciones</th>
+                            <th>🆔 ID</th>
+                            <th>👤 Nombre Completo</th>
+                            <th>✉️ Correo Electrónico</th>
+                            <th>📞 Teléfono</th>
+                            <th>⚙️ Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {loading ? (
                             <tr>
-                                <td colSpan="5" className="loading">Cargando...</td>
+                                <td colSpan="5" className="loading">
+                                    <div className="loading-spinner"></div>
+                                    <span style={{marginLeft: '0.5rem'}}>Cargando...</span>
+                                </td>
                             </tr>
                         ) : users.length === 0 ? (
                             <tr>
-                                <td colSpan="5" className="no-data">No hay usuarios registrados</td>
+                                <td colSpan="5" className="no-data">
+                                    📋 No hay usuarios registrados
+                                </td>
                             </tr>
                         ) : (
                             users.map(user => (
-                                <tr key={user.id}>
+                                <tr key={user.id} className="fade-in">
                                     <td>{user.id}</td>
                                     <td>{user.fullName}</td>
                                     <td>{user.email}</td>
                                     <td>{user.phone}</td>
                                     <td>
-                                        <button 
-                                            className="btn btn-secondary btn-sm"
-                                            onClick={() => handleEdit(user)}
-                                            disabled={loading}
-                                        >
-                                            Editar
-                                        </button>
-                                        <button 
-                                            className="btn btn-danger btn-sm"
-                                            onClick={() => handleDelete(user.id)}
-                                            disabled={loading}
-                                        >
-                                            Eliminar
-                                        </button>
+                                        <div className="table-actions">
+                                            <button 
+                                                className="btn btn-secondary btn-sm"
+                                                onClick={() => handleEdit(user)}
+                                                disabled={loading}
+                                                title="Editar usuario"
+                                            >
+                                                ✏️ Editar
+                                            </button>
+                                            <button 
+                                                className="btn btn-danger btn-sm"
+                                                onClick={() => handleDelete(user.id)}
+                                                disabled={loading}
+                                                title="Eliminar usuario"
+                                            >
+                                                🗑️ Eliminar
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))
@@ -161,22 +172,26 @@ const Users = () => {
 
             {showModal && (
                 <div className="modal-overlay">
-                    <div className="modal">
+                    <div className="modal fade-in">
                         <div className="modal-header">
-                            <h2>{editingUser ? 'Editar Usuario' : 'Nuevo Usuario'}</h2>
+                            <h2>
+                                {editingUser ? '✏️ Editar Usuario' : '➕ Nuevo Usuario'}
+                            </h2>
                             <button 
                                 className="modal-close"
                                 onClick={() => setShowModal(false)}
+                                title="Cerrar modal"
                             >
-                                ×
+                                ✕
                             </button>
                         </div>
                         <form onSubmit={handleSubmit} className="modal-body">
                             <div className="form-group">
-                                <label htmlFor="fullName">Nombre Completo:</label>
+                                <label htmlFor="fullName">👤 Nombre Completo:</label>
                                 <input
                                     type="text"
                                     id="fullName"
+                                    placeholder="Ingresa el nombre completo"
                                     value={formData.fullName}
                                     onChange={(e) => setFormData({...formData, fullName: e.target.value})}
                                     required
@@ -184,10 +199,11 @@ const Users = () => {
                                 />
                             </div>
                             <div className="form-group">
-                                <label htmlFor="email">Correo Electrónico:</label>
+                                <label htmlFor="email">✉️ Correo Electrónico:</label>
                                 <input
                                     type="email"
                                     id="email"
+                                    placeholder="ejemplo@correo.com"
                                     value={formData.email}
                                     onChange={(e) => setFormData({...formData, email: e.target.value})}
                                     required
@@ -195,10 +211,11 @@ const Users = () => {
                                 />
                             </div>
                             <div className="form-group">
-                                <label htmlFor="phone">Teléfono:</label>
+                                <label htmlFor="phone">📞 Teléfono:</label>
                                 <input
                                     type="tel"
                                     id="phone"
+                                    placeholder="+52 123 456 7890"
                                     value={formData.phone}
                                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
                                     required
@@ -212,14 +229,21 @@ const Users = () => {
                                     onClick={() => setShowModal(false)}
                                     disabled={loading}
                                 >
-                                    Cancelar
+                                    ❌ Cancelar
                                 </button>
                                 <button 
                                     type="submit" 
                                     className="btn btn-primary"
                                     disabled={loading}
                                 >
-                                    {loading ? 'Guardando...' : (editingUser ? 'Actualizar' : 'Crear')}
+                                    {loading ? (
+                                        <>
+                                            <div className="loading-spinner"></div>
+                                            <span>Guardando...</span>
+                                        </>
+                                    ) : (
+                                        editingUser ? '💾 Actualizar' : '✅ Crear'
+                                    )}
                                 </button>
                             </div>
                         </form>

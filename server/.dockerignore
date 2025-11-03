@@ -1,0 +1,14 @@
+target/
+.git
+.gitignore
+.gitattributes
+README.md
+.vscode
+.idea
+*.log
+.DS_Store
+Thumbs.db
+HELP.md
+*.cmd
+mvnw
+mvnw.cmd
