@@ -6,7 +6,7 @@ pipeline {
         stage('Parando los servicios...') {
             steps {
                 bat '''
-                    docker compose -f docker-compose.ci.yml -p sgu-aafh-10a down || exit /b 0
+                    docker compose -f docker-compose.ci.yml -p sgu-aafh-10a-ci down || echo "No hay servicios ejecutandose"
                 '''
             }
         }
@@ -15,14 +15,9 @@ pipeline {
         stage('Eliminando imágenes anteriores...') {
             steps {
                 bat '''
-                    for /f "tokens=*" %%i in ('docker images --filter "label=com.docker.compose.project=sgu-aafh-10a" -q') do (
-                        docker rmi -f %%i
-                    )
-                    if errorlevel 1 (
-                        echo No hay imagenes por eliminar
-                    ) else (
-                        echo Imagenes eliminadas correctamente
-                    )
+                    docker images --filter "reference=*sgu-ci*" -q | xargs -r docker rmi -f || echo "No hay imagenes CI por eliminar"
+                    docker images --filter "reference=client:1.0-sgu-ci" -q | xargs -r docker rmi -f || echo "No hay imagen frontend CI"
+                    docker images --filter "reference=server:1.0-sgu-ci" -q | xargs -r docker rmi -f || echo "No hay imagen backend CI"
                 '''
             }
         }
@@ -38,7 +33,10 @@ pipeline {
         stage('Construyendo y desplegando servicios...') {
             steps {
                 bat '''
-                    docker compose -f docker-compose.ci.yml up --build -d
+                    echo "Iniciando build de servicios..."
+                    docker compose -f docker-compose.ci.yml -p sgu-aafh-10a-ci up --build -d
+                    echo "Verificando estado de servicios..."
+                    docker compose -f docker-compose.ci.yml -p sgu-aafh-10a-ci ps
                 '''
             }
         }

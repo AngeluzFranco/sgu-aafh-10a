@@ -1,20 +1,16 @@
 services:
   database:
     image: mysql:8
-    container_name: sgu-database
+    container_name: sgu-database-ci
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: sgu-aafh-10a
     ports:
       - "3307:3306"
-    volumes:
-      - sgu-volume:/var/lib/mysql
-    networks:
-      - sgu-net
     restart: unless-stopped
 
   frontend:
-    image: client:1.0-sgu
+    image: client:1.0-sgu-ci
     build: 
       context: ./client
       dockerfile: Dockerfile.ci
@@ -22,16 +18,14 @@ services:
         API_HOST: localhost
         API_PORT: 8081
         API_BASE: /sgu-api
-    container_name: sgu-frontend
+    container_name: sgu-frontend-ci
     ports:
       - "3000:80"
-    networks:
-      - sgu-net
     depends_on:
       - database
 
   backend:
-    image: server:1.0-sgu
+    image: server:1.0-sgu-ci
     build: 
       context: ./server
     environment:
@@ -41,18 +35,8 @@ services:
       DB_NAME: sgu-aafh-10a
       DB_USER: root
       DB_PASS: root
-    container_name: sgu-backend
+    container_name: sgu-backend-ci
     ports:
       - "8081:8080"
-    networks:
-      - sgu-net
     depends_on:
       - frontend
-
-volumes:
-  sgu-volume:
-    external: true
-
-networks:
-  sgu-net:
-    external: true
