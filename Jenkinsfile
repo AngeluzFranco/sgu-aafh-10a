@@ -6,7 +6,7 @@ pipeline {
         stage('Parando los servicios...') {
             steps {
                 bat '''
-                    docker compose -p sgu-aafh-10a down || exit /b 0
+                    docker compose -p adj-demo down || exit /b 0
                 '''
             }
         }
@@ -46,15 +46,15 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline SGU ejecutado con éxito'
+            echo 'Pipeline ejecutado con éxito'
         }
 
         failure {
-            echo 'Hubo un error al ejecutar el pipeline SGU'
+            echo 'Hubo un error al ejecutar el pipeline'
         }
 
         always {
-            echo 'Pipeline SGU finalizado'
+            echo 'Pipeline finalizado'
         }
     }
 }
